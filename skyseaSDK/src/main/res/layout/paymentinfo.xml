@@ -55,7 +55,7 @@
                 android:id="@+id/totalMoney"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="0.05"
+                android:text="1"
                 android:textColor="#fb6807"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -121,7 +121,7 @@
                     android:id="@id/totalMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0.05"
+                    android:text="1"
                     android:textColor="#fb6807"
                     android:textSize="20sp" />
 

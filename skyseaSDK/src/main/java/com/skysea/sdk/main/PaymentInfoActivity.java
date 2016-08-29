@@ -126,11 +126,18 @@ public class PaymentInfoActivity extends FragmentActivity implements
                         datas.get(i).isSelect = false;
                     }
                 }
+                if (datas.get(0).isSelect) {
+                    payWay.setText("确认无误后去" + text + "付款");
+                    paywaybtn.setText("去" + text + "付款");
+                } else if (datas.get(1).isSelect) {
+                    payWay.setText("确认无误后去" + text + "付款");
+                    paywaybtn.setText("去" + text + "付款");
+                }
                 adapter.notifyDataSetChanged();
                 totalMoneys.setText(totalMoneys.getText());
-//
             }
         });
+
     }
 
     private void getIntentArgs(Intent intent) {
@@ -317,13 +324,8 @@ public class PaymentInfoActivity extends FragmentActivity implements
                         servername = resultData[4];
                         username = resultData[5];
                         if (datas.get(0).isSelect) {
-                            payWay.setText("确认无误后去" + datas.get(0).getValue() + "付款");
-                            paywaybtn.setText("去" + datas.get(0).getValue() + "付款");
                             Pay pay = new Pay(PaymentInfoActivity.this);
                             pay.pay(gamename + ordernum, gamename + username, ordernum, realTotleMoney);
-                        } else if (datas.get(1).isSelect) {
-                            payWay.setText("确认无误后去" + datas.get(1).getValue() + "付款");
-                            paywaybtn.setText("去" + datas.get(1).getValue() + "付款");
                         }
                     }
                 }
