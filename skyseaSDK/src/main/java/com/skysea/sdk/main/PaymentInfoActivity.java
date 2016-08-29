@@ -12,7 +12,6 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +35,7 @@ import com.skysea.bean.OrderInfo;
 import com.skysea.exception.ResponseException;
 import com.skysea.interfaces.IDispatcherCallback;
 import com.skysea.sdk.R;
+import com.skysea.utils.UtilTools;
 import com.skysea.utils.Utils;
 import com.skysea.view.FragmentLayoutWithLine;
 import com.skysea.view.ViewHolder;
@@ -45,7 +46,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
     String userid;
     String gameid;
     String gameserverid;
-    String totlesMoney;
     String ordernum;
     String gamename;
     String servername;
@@ -59,6 +59,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
     TextView totalMoney;
     FragmentLayoutWithLine checkLine;
     ProgressDialog pd_pay;
+    LinearLayout port_lay, land_lay;
 
     ListView listTab;
     List<CItem> datas = new ArrayList<CItem>();
@@ -66,6 +67,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
     TextView payWay;
     Button paywaybtn;
     String text;
+    TextView version;
     private int[] tab_text = {R.id.tab_text2, R.id.tab_text3};
     private AutoCancelController mAutoCancelController = new AutoCancelController();
 
@@ -77,63 +79,25 @@ public class PaymentInfoActivity extends FragmentActivity implements
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getIntentArgs(getIntent());
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-    }
-
-    @Override
-    protected void onResume() {
-        setContentView(R.layout.paymentinfos);
-        initView();
-//        }
-        super.onResume();
+        setContentView(R.layout.paymentinfo);
+        initViews();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-//        if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_LANDSCAPE) {
-//            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//            setContentView(R.layout.paymentinfos);
-//            initView();
-//        } else
-        if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            setContentView(R.layout.paymentinfo);
-            initViews();
+        if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_LANDSCAPE) {
+            port_lay.setVisibility(View.GONE);
+            land_lay.setVisibility(View.VISIBLE);
+            initView();
+        } else if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_PORTRAIT) {
+            land_lay.setVisibility(View.GONE);
+            port_lay.setVisibility(View.VISIBLE);
         }
     }
 
     private void initView() {
-        listTab = (ListView) findViewById(R.id.tab_list);
-        totalMoneys = (TextView) findViewById(R.id.totalMoney);
-        payWay = (TextView) findViewById(R.id.payway);
-        paywaybtn = (Button) findViewById(R.id.paywaybtn);
-        back = (ImageView) findViewById(R.id.back);
-        datas.add(new CItem(0, "支付宝"));
-        datas.add(new CItem(1, "微信"));
-        datas.get(0).isSelect = true;
-        back.setOnClickListener(this);
-        paywaybtn.setOnClickListener(this);
+        version.setText(UtilTools.getVersionName(PaymentInfoActivity.this));
         final BaseAdapter adapter = new CommonAdapter<CItem>(this, datas, R.layout.list_tab) {
             @Override
             public void convert(ViewHolder holder, CItem item, int position) {
@@ -196,11 +160,31 @@ public class PaymentInfoActivity extends FragmentActivity implements
     }
 
     private void initViews() {
+        version = (TextView) findViewById(R.id.version);
+        port_lay = (LinearLayout) findViewById(R.id.port_lay);
+        land_lay = (LinearLayout) findViewById(R.id.land_lay);
+        listTab = (ListView) findViewById(R.id.tab_list);
+        totalMoneys = (TextView) findViewById(R.id.totalMoney);
+        payWay = (TextView) findViewById(R.id.payway);
+        paywaybtn = (Button) findViewById(R.id.paywaybtn);
+        datas.add(new CItem(0, "支付宝"));
+        datas.add(new CItem(1, "微信"));
+        datas.get(0).isSelect = true;
+        paywaybtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkOrderInfo();
+            }
+        });
+
         back = (ImageView) findViewById(R.id.back);
+        back.setOnClickListener(this);
         totalMoney = (TextView) findViewById(R.id.totalMoney);
         checkLine = (FragmentLayoutWithLine) findViewById(R.id.checkLine);
-        back.setOnClickListener(this);
-        fragments.clear();
+        initFragment();
+    }
+
+    private void initFragment() {
         for (int i = 0; i < tabs.length; i++) {
             Bundle data = new Bundle();
             data.putString("text", tabs[i]);
@@ -232,7 +216,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
         });
         checkLine.setAdapter(fragments, R.layout.tablayout_nevideo_player, 0x0102);
         checkLine.getViewPager().setOffscreenPageLimit(1);//设置tab数量 4个的话就设置3，比tab数量少1
-
     }
 
     @Override
@@ -247,9 +230,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
             case R.id.back:
                 finish();
                 anim();
-                break;
-            case R.id.paywaybtn:
-                checkOrderInfo();
                 break;
         }
     }

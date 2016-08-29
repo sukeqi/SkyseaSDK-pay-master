@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.alipay.sdk.app.PayTask;
+import com.skysea.android.app.lib.MResource;
 import com.skysea.app.BaseActivity;
 import com.skysea.async.AutoCancelServiceFramework;
 import com.skysea.exception.ResponseException;
@@ -158,25 +159,47 @@ public class Pay {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+            String strRet = (String) msg.obj;
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
-                    PayResult payResult = new PayResult((Map<String, String>) msg.obj);
-                    // 支付宝返回此次支付结果及加签，建议对支付宝签名信息拿签约时支付宝提供的公钥做验签
-                    // String resultInfo = payResult.getResult();
-                    String resultStatus = payResult.getResultStatus();
-                    if (TextUtils.equals(resultStatus, "9000")) {
-                        postResult(activity, resultStatus);
-                        Toast.makeText(activity, "支付成功",
-                                Toast.LENGTH_SHORT).show();
-                    } else {
-                        // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-                        if (TextUtils.equals(resultStatus, "8000")) {
-                            Toast.makeText(activity, "支付结果确认中",
-                                    Toast.LENGTH_SHORT).show();
+                    try {
+                        String tradeStatus = "resultStatus={";
+                        int imemoStart = strRet.indexOf("resultStatus=");
+                        imemoStart += tradeStatus.length();
+                        int imemoEnd = strRet.indexOf("};memo=");
+                        tradeStatus = strRet.substring(imemoStart, imemoEnd);
+
+                        ResultChecker resultChecker = new ResultChecker(strRet);
+                        int retVal = resultChecker.checkSign();
+
+                        if (retVal == ResultChecker.RESULT_CHECK_SIGN_FAILED) {
+                            BaseHelper.showDialog(
+                                    activity,
+                                    "提示",
+                                    activity.getResources().getString(
+                                            MResource.getIdByName(activity
+                                                            .getApplicationContext(),
+                                                    "string",
+                                                    "check_sign_failed")),
+                                    android.R.drawable.ic_dialog_alert);
                         } else {
-                            Toast.makeText(activity, "支付失败",
-                                    Toast.LENGTH_LONG).show();
+                            if (TextUtils.equals(tradeStatus, "9000")) {
+                                postResult(activity, tradeStatus);
+                                Toast.makeText(activity, "支付成功",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
+                                if (TextUtils.equals(tradeStatus, "8000")) {
+                                    Toast.makeText(activity, "支付结果确认中",
+                                            Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(activity, "支付失败",
+                                            Toast.LENGTH_LONG).show();
+                                }
+                            }
                         }
+                    }catch (Exception e){
+
                     }
                     break;
                 }

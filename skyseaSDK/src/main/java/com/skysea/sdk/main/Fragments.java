@@ -39,7 +39,6 @@ public class Fragments extends Fragment implements View.OnClickListener {
     private TextView confirmpay;
     private Button gotopay;
     private TextView version;
-    private List<CItem> items;
 
     ProgressDialog pd_pay;
     String text;
