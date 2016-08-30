@@ -1,5 +1,6 @@
 package com.skysea.sdk.main;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,6 +31,15 @@ public class AgreementActivity extends BaseActivity implements OnClickListener {
 	}
 
 	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_LANDSCAPE) {
+
+		} else if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_PORTRAIT) {
+
+		}
+	}
+	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
 			setResult(0);
@@ -39,14 +49,14 @@ public class AgreementActivity extends BaseActivity implements OnClickListener {
 		return false;
 	}
 	
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-			  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-			 }
-		super.onResume();
-	}
+//	@Override
+//	protected void onResume() {
+//		// TODO Auto-generated method stub
+//		if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
+//			  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//			 }
+//		super.onResume();
+//	}
 
 	private void initView() {
 		wv = (WebView) this.findViewById(MResource.getIdByName(getApplicationContext(), "id", "wv_agreement"));

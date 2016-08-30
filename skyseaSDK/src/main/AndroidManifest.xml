@@ -28,8 +28,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.skysea.sdk.main.LoginActivity"/>
-        <activity android:name="com.skysea.sdk.main.RegisterActivity"/>
+        <activity android:name="com.skysea.sdk.main.LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            />
+        <activity android:name="com.skysea.sdk.main.RegisterActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
             android:name="com.skysea.sdk.main.AgreementActivity"
             android:configChanges="orientation|keyboardHidden|navigation"/>

@@ -6,6 +6,7 @@ import java.util.concurrent.CancellationException;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -49,15 +50,24 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 		// TODO Auto-generated method stub
 		super.onDestroy();
 	}
-
 	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+	public void onConfigurationChanged(Configuration newConfig) {
+		super.onConfigurationChanged(newConfig);
+		if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_LANDSCAPE) {
+
+		} else if (this.getResources().getConfiguration().orientation == newConfig.ORIENTATION_PORTRAIT) {
+
 		}
-		super.onResume();
 	}
+
+//	@Override
+//	protected void onResume() {
+//		// TODO Auto-generated method stub
+//		if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//		}
+//		super.onResume();
+//	}
 
 	private void initView() {
 		tv_toagreement = (TextView) this.findViewById(MResource.getIdByName(
