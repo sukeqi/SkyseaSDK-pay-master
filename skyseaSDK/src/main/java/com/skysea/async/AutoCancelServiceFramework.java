@@ -20,7 +20,6 @@ public abstract class AutoCancelServiceFramework<Params, Progress, Result>
 		super(activity);
 		// TODO Auto-generated constructor stub
 	}
-	
 	protected synchronized void createIPlatCokeService()
 			throws CancellationException {
 		if (isCanceled()) {

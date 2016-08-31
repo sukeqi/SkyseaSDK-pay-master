@@ -53,7 +53,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
     String realTotleMoney;
 
     String xb_orderid;
-    static IDispatcherCallback callback;
+    public static IDispatcherCallback callback;
 
     ImageView back;
     TextView totalMoney;
@@ -69,7 +69,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
     String text;
     TextView version;
     private int[] tab_text = {R.id.tab_text2, R.id.tab_text3};
-    private AutoCancelController mAutoCancelController = new AutoCancelController();
+    public AutoCancelController mAutoCancelController = new AutoCancelController();
 
     public static String[] tabs = {"支付宝", "微信"};
     private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
@@ -235,7 +235,8 @@ public class PaymentInfoActivity extends FragmentActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back:
-                finish();
+                setResult(300, null);
+                PaymentInfoActivity.this.finish();
                 anim();
                 break;
         }
@@ -267,11 +268,20 @@ public class PaymentInfoActivity extends FragmentActivity implements
                             "string", "modeofpayment_check")),
                     Toast.LENGTH_SHORT).show();
         }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 200) {
+            setResult(200, data);
+            callback.onFinish(data.getExtras().getString("tradeStatus"));
+            PaymentInfoActivity.this.finish();
+        }
     }
 
     public void autoCancel(Cancelable task) {
         mAutoCancelController.add(task);
+
     }
 
     private void handlerOrder(OrderInfo info) {
@@ -317,7 +327,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 if (result != null) {
                     String resultData[] = handlerResult(result);
                     // Message&Status&ordernum&GameName&ServerName&Username
-
                     if (resultData[1].equals("1")) {
                         ordernum = resultData[2];
                         gamename = resultData[3];
@@ -333,7 +342,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
         }.execute(info));
     }
-
     private String[] handlerResult(String result) {
 
         // Message&Status&ordernum&GameName&ServerName&Username

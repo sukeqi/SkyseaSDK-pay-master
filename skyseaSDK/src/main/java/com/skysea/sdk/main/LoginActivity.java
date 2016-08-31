@@ -197,7 +197,6 @@ public class LoginActivity extends BaseActivity implements OnClickListener,
                         Utils.setLoginSharePreferences(LoginActivity.this,
                                 info.getUsername());
                         Utils.clearTemporaryInfo(LoginActivity.this);
-                        callback.onGotTicketInfo(msg);
                         Intent intent = new Intent();
                         LoginActivity.this.setResult(100, intent);
                         Toast.makeText(LoginActivity.this, "恭喜你，登陆成功！",

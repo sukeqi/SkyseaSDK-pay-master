@@ -1,6 +1,7 @@
 package com.skysea.alipay;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -11,6 +12,9 @@ import com.skysea.android.app.lib.MResource;
 import com.skysea.app.BaseActivity;
 import com.skysea.async.AutoCancelServiceFramework;
 import com.skysea.exception.ResponseException;
+import com.skysea.sdk.main.MainActivity;
+import com.skysea.sdk.main.PaymentInfoActivity;
+import com.skysea.utils.Utils;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -160,14 +164,15 @@ public class Pay {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             String strRet = (String) msg.obj;
+            String tradeStatus = "resultStatus={";
+            int imemoStart = strRet.indexOf("resultStatus=");
+            imemoStart += tradeStatus.length();
+            int imemoEnd = strRet.indexOf("};memo=");
+            tradeStatus = strRet.substring(imemoStart, imemoEnd);
+
             switch (msg.what) {
                 case SDK_PAY_FLAG: {
                     try {
-                        String tradeStatus = "resultStatus={";
-                        int imemoStart = strRet.indexOf("resultStatus=");
-                        imemoStart += tradeStatus.length();
-                        int imemoEnd = strRet.indexOf("};memo=");
-                        tradeStatus = strRet.substring(imemoStart, imemoEnd);
 
                         ResultChecker resultChecker = new ResultChecker(strRet);
                         int retVal = resultChecker.checkSign();
@@ -183,13 +188,13 @@ public class Pay {
                                                     "check_sign_failed")),
                                     android.R.drawable.ic_dialog_alert);
                         } else {
-                            if (TextUtils.equals(tradeStatus, "9000")) {
-                                postResult(activity, tradeStatus);
+                            if (tradeStatus.equals("9000")) {
+                                postResult(activity, Utils.subPayResultString(tradeStatus));
                                 Toast.makeText(activity, "支付成功",
                                         Toast.LENGTH_SHORT).show();
                             } else {
                                 // “8000”代表支付结果因为支付渠道原因或者系统原因还在等待支付结果确认，最终交易是否成功以服务端异步通知为准（小概率状态）
-                                if (TextUtils.equals(tradeStatus, "8000")) {
+                                if (tradeStatus.equals("9000")) {
                                     Toast.makeText(activity, "支付结果确认中",
                                             Toast.LENGTH_SHORT).show();
                                 } else {
@@ -201,6 +206,10 @@ public class Pay {
                     }catch (Exception e){
 
                     }
+                    Intent data = new Intent();
+                    data.putExtra("tradeStatus",tradeStatus);
+                    activity.setResult(200,data);
+                    activity.finish();
                     break;
                 }
             }
