@@ -230,7 +230,6 @@ public class Pay {
                     @Override
                     protected void onPostExecute(String result) {
                         // TODO Auto-generated method stub
-                        //Log.v(TAG, "result:"+(result.equals("1")?"success":"false"));
                     }
 
                     @Override

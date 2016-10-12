@@ -48,15 +48,6 @@ public class AgreementActivity extends BaseActivity implements OnClickListener {
 		}
 		return false;
 	}
-	
-//	@Override
-//	protected void onResume() {
-//		// TODO Auto-generated method stub
-//		if(getRequestedOrientation()!=ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE){
-//			  setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//			 }
-//		super.onResume();
-//	}
 
 	private void initView() {
 		wv = (WebView) this.findViewById(MResource.getIdByName(getApplicationContext(), "id", "wv_agreement"));

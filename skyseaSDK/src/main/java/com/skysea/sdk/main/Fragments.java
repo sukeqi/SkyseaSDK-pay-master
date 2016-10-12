@@ -23,8 +23,11 @@ import com.skysea.bean.CItem;
 import com.skysea.bean.OrderInfo;
 import com.skysea.exception.ResponseException;
 import com.skysea.sdk.R;
+import com.skysea.utils.Util;
 import com.skysea.utils.UtilTools;
 import com.skysea.utils.Utils;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,6 +55,7 @@ public class Fragments extends Fragment implements View.OnClickListener {
     String gamename;
     String servername;
     String username;
+
     private AutoCancelController mAutoCancelController = new AutoCancelController();
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -98,7 +102,12 @@ public class Fragments extends Fragment implements View.OnClickListener {
         r.setGameid(gameid);
         r.setGameserverid(gameserverid);
         r.setXb_orderid(xb_orderid);
-        r.setPayment_mode(2 + "");
+        if (text.equals(PaymentInfoActivity.tabs[0])) {
+            r.setPayment_mode(2 + "");
+        } else if (text.equals(PaymentInfoActivity.tabs[1])) {
+            r.setPayment_mode(21 + "");
+        }
+
 
         if (!totlesMoney.equals("0")) {
             r.setAmount(totlesMoney);
@@ -160,11 +169,12 @@ public class Fragments extends Fragment implements View.OnClickListener {
                         servername = resultData[4];
                         username = resultData[5];
                         if (text.equals(PaymentInfoActivity.tabs[0])) {
-
                             Pay pay = new Pay(getActivity());
                             pay.pay(gamename + ordernum, gamename + username, ordernum, totlesMoney);
                         } else if (text.equals(PaymentInfoActivity.tabs[1])) {
-
+                            Intent intent = new Intent(getActivity(), WechatActivity.class);
+                            intent.putExtra("ordernum", ordernum);
+                            startActivity(intent);
                         }
                     }
                 }

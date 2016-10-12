@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.skysea.sdk"
     android:versionCode="1"
@@ -8,50 +9,54 @@
         android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <supports-screens android:anyDensity="true" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.skysea.sdk.main.MainActivity"
+            android:name=".main.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.skysea.sdk.main.LoginActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            />
-        <activity android:name="com.skysea.sdk.main.RegisterActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <activity
-            android:name="com.skysea.sdk.main.AgreementActivity"
-            android:configChanges="orientation|keyboardHidden|navigation"/>
+            android:name=".main.LoginActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
         <activity
-            android:name="com.skysea.sdk.main.PaymentInfoActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"/>
-        <activity android:name="com.skysea.sdk.main.OrderInfoActivity"/>
+            android:name=".main.RegisterActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity
+            android:name=".main.AgreementActivity"
+            android:configChanges="orientation|keyboardHidden|navigation" />
+        <activity
+            android:name=".main.PaymentInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name=".main.OrderInfoActivity" />
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
-        </activity>
+            android:screenOrientation="behind" />
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
-        </activity>
+            android:screenOrientation="behind" />
+        <activity android:name=".main.WechatActivity" />
+
     </application>
 
 </manifest>

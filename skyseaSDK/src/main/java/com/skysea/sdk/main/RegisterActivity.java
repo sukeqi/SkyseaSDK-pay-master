@@ -60,15 +60,6 @@ public class RegisterActivity extends BaseActivity implements OnClickListener,
 		}
 	}
 
-//	@Override
-//	protected void onResume() {
-//		// TODO Auto-generated method stub
-//		if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-//			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-//		}
-//		super.onResume();
-//	}
-
 	private void initView() {
 		tv_toagreement = (TextView) this.findViewById(MResource.getIdByName(
 				getApplicationContext(), "id", "tv_agree"));

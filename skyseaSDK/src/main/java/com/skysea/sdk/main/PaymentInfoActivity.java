@@ -1,6 +1,7 @@
 package com.skysea.sdk.main;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CancellationException;
@@ -12,6 +13,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +37,7 @@ import com.skysea.bean.OrderInfo;
 import com.skysea.exception.ResponseException;
 import com.skysea.interfaces.IDispatcherCallback;
 import com.skysea.sdk.R;
+import com.skysea.utils.Util;
 import com.skysea.utils.UtilTools;
 import com.skysea.utils.Utils;
 import com.skysea.view.FragmentLayoutWithLine;
@@ -50,7 +53,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
     String gamename;
     String servername;
     String username;
-    String realTotleMoney;
+    String amount;
 
     String xb_orderid;
     public static IDispatcherCallback callback;
@@ -73,6 +76,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
     public static String[] tabs = {"支付宝", "微信"};
     private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +138,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
                     paywaybtn.setText("去" + text + "付款");
                 }
                 adapter.notifyDataSetChanged();
-                totalMoneys.setText(totalMoneys.getText());
+                totalMoneys.setText(amount);
             }
         });
 
@@ -146,6 +150,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
             gameid = intent.getExtras().getString("gameid");
             gameserverid = intent.getExtras().getString("gameserverid");
             xb_orderid = intent.getExtras().getString("xb_orderid");
+            amount = intent.getExtras().getString("amount");
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
@@ -187,6 +192,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
         back = (ImageView) findViewById(R.id.back);
         back.setOnClickListener(this);
         totalMoney = (TextView) findViewById(R.id.totalMoney);
+        totalMoney.setText(amount);
         checkLine = (FragmentLayoutWithLine) findViewById(R.id.checkLine);
         initFragment();
     }
@@ -199,7 +205,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
             data.putString("gameid", gameid);
             data.putString("gameserverid", gameserverid);
             data.putString("xb_orderid", xb_orderid);
-            data.putString("totlesMoney", totalMoney.getText().toString());
+            data.putString("totlesMoney", amount);
             if (isFinishing()) {
                 return;
             }
@@ -255,11 +261,14 @@ public class PaymentInfoActivity extends FragmentActivity implements
         r.setGameid(gameid);
         r.setGameserverid(gameserverid);
         r.setXb_orderid(xb_orderid);
-        r.setPayment_mode(2 + "");
+        if (datas.get(0).isSelect) {
+            r.setPayment_mode(2 + "");
+        } else if (datas.get(1).isSelect) {
+            r.setPayment_mode(21 + "");
+        }
 
-        if (!totalMoneys.getText().equals("0")) {
-            realTotleMoney = totalMoneys.getText().toString();
-            r.setAmount(realTotleMoney);
+        if (!amount.equals("0")) {
+            r.setAmount(amount);
             handlerOrder(r);
         } else {
             Toast.makeText(
@@ -326,7 +335,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 Utils.dismiss(pd_pay);
                 if (result != null) {
                     String resultData[] = handlerResult(result);
-                    // Message&Status&ordernum&GameName&ServerName&Username
                     if (resultData[1].equals("1")) {
                         ordernum = resultData[2];
                         gamename = resultData[3];
@@ -334,7 +342,11 @@ public class PaymentInfoActivity extends FragmentActivity implements
                         username = resultData[5];
                         if (datas.get(0).isSelect) {
                             Pay pay = new Pay(PaymentInfoActivity.this);
-                            pay.pay(gamename + ordernum, gamename + username, ordernum, realTotleMoney);
+                            pay.pay(gamename + ordernum, gamename + username, ordernum, amount);
+                        } else if (datas.get(1).isSelect) {
+                            Intent intent = new Intent(PaymentInfoActivity.this, WechatActivity.class);
+                            intent.putExtra("ordernum", ordernum);
+                            startActivity(intent);
                         }
                     }
                 }
@@ -342,6 +354,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
         }.execute(info));
     }
+
     private String[] handlerResult(String result) {
 
         // Message&Status&ordernum&GameName&ServerName&Username

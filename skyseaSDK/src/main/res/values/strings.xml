@@ -77,4 +77,6 @@
     <string name="charsetHint">"charset"</string>
     <string name="signTypeHint">"signType"</string>
 
+    <string name="pay_result_callback_msg" formatted="false">微信支付结果：%s</string>
+
 </resources>
